@@ -1,7 +1,6 @@
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation, useRouter } from "expo-router";
 import { Bell, Menu, Search } from "lucide-react-native";
-import { useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -17,6 +16,7 @@ import ProductActions from "../components/ProductActions";
 import ProductCard from "../components/ProductCard";
 
 import { Header } from "../components/Header";
+import { useCart } from "../providers/CartProvider";
 import { useProduct } from "../providers/ProductProvider";
 
 const PADDING = 20;
@@ -31,19 +31,7 @@ export default function HomeScreen() {
   const { width } = useWindowDimensions();
   const cardWidth = (width - PADDING * 2 - GAP) / 2;
 
-  const [cart, setCart] = useState([]); // [{ id, qty }]
-
-  const handleAddToCart = (product) => {
-    setCart((prev) => {
-      const existing = prev.find((i) => i.id === product.id);
-      if (existing) {
-        return prev.map((i) =>
-          i.id === product.id ? { ...i, qty: i.qty + 1 } : i,
-        );
-      }
-      return [...prev, { id: product.id, qty: 1 }];
-    });
-  };
+  const { addItem, count, items, cartTotal } = useCart();
 
   const handleBuyNow = (product) => {
     router.push({
@@ -51,8 +39,6 @@ export default function HomeScreen() {
       params: { id: String(product.id) },
     });
   };
-
-  const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
@@ -90,7 +76,7 @@ export default function HomeScreen() {
                 <Header.Button
                   icon={Bell}
                   label="Notifications"
-                  badge={cartCount}
+                  badge={count}
                 />
               </Header.Right>
             </Header>
@@ -99,7 +85,11 @@ export default function HomeScreen() {
 
             <View style={styles.searchRow}>
               <View style={{ flex: 1 }}>
-                <AppInput placeholder="Search products..." />
+                <AppInput
+                  autoFocus
+                  placeholder="Search products..."
+                  variant="filled"
+                />
               </View>
               <View style={styles.iconWrapper}>
                 <Search color="white" />
@@ -118,7 +108,7 @@ export default function HomeScreen() {
               details={item.details}
             >
               <ProductActions
-                onAddToCart={() => handleAddToCart(item)}
+                onAddToCart={() => addItem(item)}
                 onBuyNow={() => handleBuyNow(item)}
               />
             </ProductCard>
@@ -132,6 +122,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
     position: "relative",
     paddingHorizontal: PADDING,
   },

@@ -31,7 +31,7 @@ export default function AppInput({
 
       <TextInput
         {...rest}
-        secureTextEntry={type === "password" && showPassword}
+        secureTextEntry={type === "password" && !showPassword}
         value={value}
         placeholder={placeholder}
         placeholderTextColor={filled ? "#9A9A98" : undefined}

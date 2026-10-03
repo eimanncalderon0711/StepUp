@@ -28,7 +28,7 @@ export default function RegisterScreen() {
     setError("");
     setUsername("");
     setPassword("");
-    router.replace("/(tabs)");
+    router.replace("/otp");
   }
 
   return (

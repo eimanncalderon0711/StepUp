@@ -47,7 +47,7 @@ export default function LoginScreen() {
           </View>
           <Text style={styles.title}>Welcome back</Text>
           <Text style={styles.subtitle}>
-            Log in to continue shopping at ShopeeBai.
+            Log in to continue shopping at StepUp.
           </Text>
 
           {/* Form */}

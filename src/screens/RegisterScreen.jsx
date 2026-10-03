@@ -93,7 +93,7 @@ export default function RegisterScreen() {
           </View>
 
           <AppButton
-            name="Login"
+            name="Register"
             color="#111"
             size="lg"
             style={styles.button}
@@ -102,9 +102,9 @@ export default function RegisterScreen() {
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Don't have an account yet? </Text>
-            <Link href="/register" style={styles.footerLink}>
-              Register
+            <Text style={styles.footerText}>Already have an account? </Text>
+            <Link href="/login" style={styles.footerLink}>
+              Login
             </Link>
           </View>
         </ScrollView>

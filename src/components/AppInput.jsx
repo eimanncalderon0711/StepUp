@@ -1,6 +1,7 @@
 import { Fontisto } from "@expo/vector-icons";
+import { Eye, EyeOff } from "lucide-react-native";
 import { useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
 export default function AppInput({
   placeholder,
@@ -15,6 +16,7 @@ export default function AppInput({
 }) {
   const [focused, setFocused] = useState(false);
   const filled = variant === "filled";
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View
@@ -29,6 +31,7 @@ export default function AppInput({
 
       <TextInput
         {...rest}
+        secureTextEntry={type === "password" && showPassword}
         value={value}
         placeholder={placeholder}
         placeholderTextColor={filled ? "#9A9A98" : undefined}
@@ -38,7 +41,19 @@ export default function AppInput({
         style={[{ flex: 1 }, filled && styles.filledText]}
       />
 
-      {right}
+      {type === "password" && (
+        <Pressable
+          hitSlop={10}
+          onPress={() => setShowPassword((v) => !v)}
+          accessibilityLabel={showPassword ? "Hide password" : "Show password"}
+        >
+          {showPassword ? (
+            <EyeOff size={18} color="#8A8A8A" />
+          ) : (
+            <Eye size={18} color="#8A8A8A" />
+          )}
+        </Pressable>
+      )}
 
       {type === "search" ? (
         <Fontisto name="search" size={24} color="black" />

@@ -1,12 +1,11 @@
 import AppButton from "@/components/AppButton";
 import AppInput from "@/components/AppInput";
 import { Link, router } from "expo-router";
-import { Eye, EyeOff, Lock, ShoppingBag, User } from "lucide-react-native";
+import { Lock, ShoppingBag, User } from "lucide-react-native";
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,7 +16,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   function handleLogin() {
@@ -70,26 +68,11 @@ export default function LoginScreen() {
               icon={Lock}
               placeholder="Password"
               value={password}
+              type="password"
               onChangeText={setPassword}
-              secureTextEntry={!showPassword}
               autoCapitalize="none"
               returnKeyType="done"
               onSubmitEditing={handleLogin}
-              right={
-                <Pressable
-                  hitSlop={10}
-                  onPress={() => setShowPassword((v) => !v)}
-                  accessibilityLabel={
-                    showPassword ? "Hide password" : "Show password"
-                  }
-                >
-                  {showPassword ? (
-                    <EyeOff size={18} color="#8A8A8A" />
-                  ) : (
-                    <Eye size={18} color="#8A8A8A" />
-                  )}
-                </Pressable>
-              }
             />
 
             {error ? <Text style={styles.error}>{error}</Text> : null}

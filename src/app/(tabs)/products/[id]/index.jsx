@@ -188,6 +188,12 @@ export default function ProductDetail() {
         <Pressable
           disabled={!size}
           accessibilityRole="button"
+          onPress={() =>
+            router.push({
+              pathname: "/checkout",
+              params: { id: String(id), size },
+            })
+          }
           style={({ pressed }) => [
             styles.buyBtn,
             !size && styles.btnDisabled,

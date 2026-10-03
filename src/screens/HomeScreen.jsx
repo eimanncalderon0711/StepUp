@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   useWindowDimensions,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -47,7 +47,7 @@ export default function HomeScreen() {
 
   const handleBuyNow = (product) => {
     router.push({
-      pathname: "/checkout",
+      pathname: "/products/[id]",
       params: { id: String(product.id) },
     });
   };

@@ -1,3 +1,5 @@
+import { AntDesign } from "@expo/vector-icons";
+import Entypo from "@expo/vector-icons/Entypo";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import { router } from "expo-router";
@@ -8,9 +10,6 @@ import MapView from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppButton from "../../../components/AppButton";
 import AppInput from "../../../components/AppInput";
-
-import { AntDesign } from "@expo/vector-icons";
-import Entypo from "@expo/vector-icons/Entypo";
 
 export default function settings() {
   const [location, setLocation] = useState(null);

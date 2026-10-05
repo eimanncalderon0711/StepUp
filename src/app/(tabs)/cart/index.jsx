@@ -21,6 +21,7 @@ export default function Cart() {
 
       <FlatList
         data={items}
+        style={{marginTop: 20}}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View
@@ -30,6 +31,7 @@ export default function Cart() {
               backgroundColor: "white",
               elevation: 10,
               gap: 10,
+              marginTop: 10,
             }}
           >
             <View style={{ height: 100, width: 100 }}>

@@ -80,6 +80,9 @@ export default function TabLayout() {
             options={{
               title: "Cart",
 
+              tabBarStyle: {
+                display: "none",
+              },
               tabBarIcon: ({ color, focused }) => (
                 <Ionicons
                   name={focused ? "cart" : "cart-outline"}

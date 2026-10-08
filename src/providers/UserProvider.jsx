@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import UserContext from "../contexts/UserContext";
 
 const ACCOUNT_KEY = "accounts";
@@ -7,13 +7,13 @@ const ACCOUNT_KEY = "accounts";
 export default function UserProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    async function clearAccounts() {
-      await AsyncStorage.removeItem(ACCOUNT_KEY);
-    }
+  // useEffect(() => {
+  //   async function clearAccounts() {
+  //     await AsyncStorage.removeItem(ACCOUNT_KEY);
+  //   }
 
-    clearAccounts();
-  }, []);
+  //   clearAccounts();
+  // }, []);
 
   async function getMe() {
     try {

@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Header } from "../../../../components/Header";
+import { useFavorite } from "../../../../providers/FavoriteProvider";
 import { useProduct } from "../../../../providers/ProductProvider";
 
 const SIZES = [
@@ -41,12 +42,16 @@ export default function ProductDetail() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams();
   const { products } = useProduct();
+  const { addFavorite, favorites, removeFavorite } = useFavorite();
 
   const [size, setSize] = useState(null);
-  const [liked, setLiked] = useState(false);
 
   const product = products.find(
     (item) => item.id.toString() === String(Array.isArray(id) ? id[0] : id),
+  );
+
+  const isFavorite = favorites.some(
+    (item) => item.id.toString() === product.id.toString(),
   );
 
   if (!product) {
@@ -161,10 +166,12 @@ export default function ProductDetail() {
         <Header.Right>
           <Header.Button
             icon={Heart}
-            label={liked ? "Remove from favorites" : "Add to favorites"}
-            onPress={() => setLiked((v) => !v)}
+            label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            onPress={() =>
+              isFavorite ? removeFavorite(product) : addFavorite(product)
+            }
             iconProps={
-              liked ? { color: "#E5322D", fill: "#E5322D" } : undefined
+              isFavorite ? { color: "#E5322D", fill: "#E5322D" } : undefined
             }
           />
         </Header.Right>

@@ -12,22 +12,33 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useUser } from "../providers/UserProvider";
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  function handleLogin() {
+  const { login, user } = useUser();
+
+  async function handleLogin() {
     if (!username.trim() || !password) {
       setError("Please enter your username and password.");
       return;
     }
 
+    const response = await login(username, password);
+
+    if (response.success) {
+      router.replace("/(tabs)");
+      clearForm();
+    }
+  }
+
+  function clearForm() {
     setError("");
     setUsername("");
     setPassword("");
-    router.replace("/(tabs)");
   }
 
   return (

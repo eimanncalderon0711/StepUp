@@ -25,8 +25,6 @@ export default function UserProvider({ children }) {
       }
 
       const users = JSON.parse(storedData);
-
-      console.log("All accounts:", users);
     } catch (error) {
       console.error("getMe error:", error);
     }
@@ -49,7 +47,13 @@ export default function UserProvider({ children }) {
       if (!userData) {
         return console.error("Invalid User");
       }
+
       setUser({ ...userData });
+
+      return {
+        success: true,
+        message: "Login Successful",
+      };
     } catch (error) {
       console.error(error);
     }
@@ -64,8 +68,6 @@ export default function UserProvider({ children }) {
       users.push(data);
 
       await AsyncStorage.setItem(ACCOUNT_KEY, JSON.stringify(users));
-
-      console.log("All accounts:", users);
     } catch (error) {
       console.log(error);
     }

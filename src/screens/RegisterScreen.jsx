@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useUser } from "../providers/UserProvider";
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState("");
@@ -19,16 +20,34 @@ export default function RegisterScreen() {
   const [confirmPass, setConfirmPass] = useState("");
   const [error, setError] = useState("");
 
-  function handleLogin() {
+  const { register } = useUser();
+
+  async function handleRegister() {
     if (!username.trim() || !password) {
       setError("Please enter your username and password.");
       return;
     }
 
+    try {
+      await register({
+        id: Date.now().toString(),
+        username: username.trim(),
+        password,
+      });
+    } catch (error) {
+      console.error("Registration failed:", error);
+      setError("Something went wrong. Please try again.");
+    }
+
+    router.replace("/otp");
+    clearForm();
+  }
+
+  function clearForm() {
     setError("");
     setUsername("");
     setPassword("");
-    router.replace("/otp");
+    setConfirmPass("");
   }
 
   return (
@@ -74,7 +93,6 @@ export default function RegisterScreen() {
               autoCapitalize="none"
               returnKeyType="done"
               type="password"
-              onSubmitEditing={handleLogin}
             />
 
             <AppInput
@@ -86,7 +104,6 @@ export default function RegisterScreen() {
               autoCapitalize="none"
               returnKeyType="done"
               type="password"
-              onSubmitEditing={handleLogin}
             />
 
             {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -97,7 +114,7 @@ export default function RegisterScreen() {
             color="#111"
             size="lg"
             style={styles.button}
-            onPress={handleLogin}
+            onPress={handleRegister}
           />
 
           {/* Footer */}

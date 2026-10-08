@@ -35,7 +35,10 @@ export default function UserProvider({ children }) {
       const storedData = await AsyncStorage.getItem(ACCOUNT_KEY);
 
       if (!storedData) {
-        return;
+        return {
+          success: false,
+          message: "No accounts found",
+        };
       }
 
       const users = JSON.parse(storedData);
@@ -45,7 +48,11 @@ export default function UserProvider({ children }) {
       );
 
       if (!userData) {
-        return console.error("Invalid User");
+        console.error("Invalid User");
+        return {
+          success: false,
+          message: "Invalid User",
+        };
       }
 
       setUser({ ...userData });

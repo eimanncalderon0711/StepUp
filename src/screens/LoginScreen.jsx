@@ -29,10 +29,13 @@ export default function LoginScreen() {
 
     const response = await login(username, password);
 
-    if (response.success) {
-      router.replace("/(tabs)");
-      clearForm();
+    if (!response.success) {
+      setError("Invalid username/password");
+      return;
     }
+
+    router.replace("/(tabs)");
+    clearForm();
   }
 
   function clearForm() {

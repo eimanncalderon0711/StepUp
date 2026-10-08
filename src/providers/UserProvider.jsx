@@ -65,7 +65,7 @@ export default function UserProvider({ children }) {
 
       const users = storedUsers ? JSON.parse(storedUsers) : [];
 
-      users.push(data);
+      users.push({ ...data, firstName: "", lastName: "" });
 
       await AsyncStorage.setItem(ACCOUNT_KEY, JSON.stringify(users));
     } catch (error) {

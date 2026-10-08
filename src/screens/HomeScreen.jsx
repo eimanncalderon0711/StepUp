@@ -15,9 +15,11 @@ import Categories from "../components/Categories";
 import ProductActions from "../components/ProductActions";
 import ProductCard from "../components/ProductCard";
 
+import { useEffect } from "react";
 import { Header } from "../components/Header";
 import { useCart } from "../providers/CartProvider";
 import { useProduct } from "../providers/ProductProvider";
+import { useUser } from "../providers/UserProvider";
 
 const PADDING = 20;
 const GAP = 12;
@@ -32,6 +34,11 @@ export default function HomeScreen() {
   const cardWidth = (width - PADDING * 2 - GAP) / 2;
 
   const { addItem, count, items, cartTotal } = useCart();
+  const { user } = useUser();
+
+  useEffect(() => {
+    console.log(user);
+  }, []);
 
   const handleBuyNow = (product) => {
     router.push({

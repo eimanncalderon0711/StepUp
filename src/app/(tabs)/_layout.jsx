@@ -1,11 +1,16 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Tabs } from "expo-router";
+import { Tabs, useSegments } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CartProvider from "../../providers/CartProvider";
 import ProductProvider from "../../providers/ProductProvider";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const segments = useSegments();
+
+  const hiddenTabRoutes = ["settings", "cart", "checkout", "[id]"];
+  const hideTabBar = hiddenTabRoutes.some((route) => segments.includes(route));
+
   return (
     <ProductProvider>
       <CartProvider>
@@ -17,19 +22,19 @@ export default function TabLayout() {
             tabBarShowLabel: true,
             tabBarHideOnKeyboard: true,
 
-            tabBarStyle: {
-              position: "absolute",
-              bottom: insets.bottom + 10,
-              marginHorizontal: 20,
-              height: 65,
-
-              borderRadius: 35,
-              backgroundColor: "white",
-              borderTopWidth: 0,
-
-              elevation: 5,
-              shadowOpacity: 0.15,
-            },
+            tabBarStyle: hideTabBar
+              ? { display: "none" }
+              : {
+                  position: "absolute",
+                  bottom: insets.bottom + 10,
+                  marginHorizontal: 20,
+                  height: 65,
+                  borderRadius: 35,
+                  backgroundColor: "white",
+                  borderTopWidth: 0,
+                  elevation: 5,
+                  shadowOpacity: 0.15,
+                },
 
             tabBarItemStyle: {
               marginTop: 4,
@@ -37,7 +42,6 @@ export default function TabLayout() {
               alignItems: "center",
             },
 
-            // Move the label down
             tabBarLabelStyle: {
               marginTop: 4,
               marginBottom: 0,
@@ -49,7 +53,6 @@ export default function TabLayout() {
             name="(drawer)"
             options={{
               title: "Home",
-
               tabBarIcon: ({ color, focused }) => (
                 <Ionicons
                   name={focused ? "home-sharp" : "home-outline"}
@@ -64,7 +67,6 @@ export default function TabLayout() {
             name="favorites"
             options={{
               title: "Favorites",
-
               tabBarIcon: ({ color, focused }) => (
                 <Ionicons
                   name={focused ? "heart" : "heart-outline"}
@@ -79,10 +81,6 @@ export default function TabLayout() {
             name="cart"
             options={{
               title: "Cart",
-
-              tabBarStyle: {
-                display: "none",
-              },
               tabBarIcon: ({ color, focused }) => (
                 <Ionicons
                   name={focused ? "cart" : "cart-outline"}
@@ -97,7 +95,6 @@ export default function TabLayout() {
             name="products/[id]/index"
             options={{
               href: null,
-              tabBarStyle: { display: "none" },
             }}
           />
 
@@ -105,7 +102,6 @@ export default function TabLayout() {
             name="checkout"
             options={{
               href: null,
-              tabBarStyle: { display: "none" },
             }}
           />
         </Tabs>

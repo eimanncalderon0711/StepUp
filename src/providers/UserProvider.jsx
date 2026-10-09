@@ -7,29 +7,6 @@ const ACCOUNT_KEY = "accounts";
 export default function UserProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  // useEffect(() => {
-  //   async function clearAccounts() {
-  //     await AsyncStorage.removeItem(ACCOUNT_KEY);
-  //   }
-
-  //   clearAccounts();
-  // }, []);
-
-  async function getMe() {
-    try {
-      const storedData = await AsyncStorage.getItem(ACCOUNT_KEY);
-
-      if (!storedData) {
-        console.log("No accounts found");
-        return;
-      }
-
-      const users = JSON.parse(storedData);
-    } catch (error) {
-      console.error("getMe error:", error);
-    }
-  }
-
   async function login(username, password) {
     try {
       const storedData = await AsyncStorage.getItem(ACCOUNT_KEY);
@@ -80,7 +57,7 @@ export default function UserProvider({ children }) {
     }
   }
 
-  const data = useMemo(() => ({ user, login, register, getMe }), [user]);
+  const data = useMemo(() => ({ user, login, register }), [user]);
 
   return <UserContext.Provider value={data}>{children}</UserContext.Provider>;
 }

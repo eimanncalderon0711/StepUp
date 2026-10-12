@@ -1,8 +1,9 @@
 import AppButton from "@/components/AppButton";
 import AppInput from "@/components/AppInput";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, router } from "expo-router";
 import { Lock, ShoppingBag, User } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -18,8 +19,26 @@ export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [checkUserSession, setCheckUserSession] = useState(true);
 
-  const { login, user } = useUser();
+  const { login } = useUser();
+
+  useEffect(() => {
+    async function getLoggedUser() {
+      try {
+        const loggedUser = await AsyncStorage.getItem("user");
+        if (loggedUser) {
+          router.replace("/(tabs)");
+        }
+      } catch (error) {
+        console.error("Error retrieving logged user:", error);
+      } finally {
+        setCheckUserSession(false);
+      }
+    }
+
+    getLoggedUser();
+  }, []);
 
   async function handleLogin() {
     if (!username.trim() || !password) {
@@ -42,6 +61,14 @@ export default function LoginScreen() {
     setError("");
     setUsername("");
     setPassword("");
+  }
+
+  if (checkUserSession) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
   }
 
   return (

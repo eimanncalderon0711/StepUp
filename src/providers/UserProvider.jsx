@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import UserContext from "../contexts/UserContext";
 
 const ACCOUNT_KEY = "accounts";
+const SESSION_KEY = "user";
 
 export default function UserProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -32,6 +33,7 @@ export default function UserProvider({ children }) {
         };
       }
 
+      await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(userData));
       setUser({ ...userData });
 
       return {

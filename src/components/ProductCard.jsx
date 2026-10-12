@@ -12,7 +12,19 @@ export default function ProductCard({
   children, // optional slot for actions, badges, quantity controls, etc.
 }) {
   return (
-    <Card>
+    <Card
+      style={{
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 3,
+      }}
+    >
       <TouchableOpacity
         opacity={0.2}
         style={{ width: "100%" }}

@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import UserContext from "../contexts/UserContext";
 
 const ACCOUNT_KEY = "accounts";
@@ -7,6 +7,28 @@ const SESSION_KEY = "user";
 
 export default function UserProvider({ children }) {
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadSession() {
+      try {
+        const storedSession = await AsyncStorage.getItem(SESSION_KEY);
+
+        if (isMounted && storedSession) {
+          setUser(JSON.parse(storedSession));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    loadSession();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   async function login(username, password) {
     try {

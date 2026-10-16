@@ -1,4 +1,5 @@
 import { FontAwesome } from "@expo/vector-icons";
+import { router } from "expo-router";
 import {
   FlatList,
   Image,
@@ -20,14 +21,30 @@ export default function Favorites() {
       <Header>
         <Header.Title style={{ fontSize: 25 }}>Favorites</Header.Title>
       </Header>
-      <View>
+      <View style={{ flex: 1 }}>
         <FlatList
-          ListEmptyComponent={<Text>No favorites yet.</Text>}
+          contentContainerStyle={{
+            flexGrow: 1,
+          }}
+          ListEmptyComponent={
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                flex: 1,
+              }}
+            >
+              <Text>No Favorites Added Yet</Text>
+            </View>
+          }
           data={favorites}
           keyExtractor={(item) => item.id.toString()}
           // ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.btnContainer}>
+            <TouchableOpacity
+              style={styles.btnContainer}
+              onPress={() => router.push(`/products/${item.id}`)}
+            >
               <Card style={styles.cardWrapper}>
                 <View style={styles.productImage}>
                   <Image

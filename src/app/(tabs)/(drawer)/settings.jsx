@@ -4,27 +4,53 @@ import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
-import { useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import MapView from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppButton from "../../../components/AppButton";
 import AppInput from "../../../components/AppInput";
+import { useUser } from "../../../providers/UserProvider";
 
 export default function settings() {
   const [location, setLocation] = useState(null);
+  const { user, updateProfile } = useUser();
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address, setAddress] = useState("");
+  const [email, setEmail] = useState("");
   const [image, setImage] = useState(null);
 
-  async function getCurrentLocation() {
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setFirstName(user.firstName ?? "");
+      setLastName(user.lastName ?? "");
+      setAddress(user.address ?? "");
+      setEmail(user.email ?? "");
+      setImage(user.profilePic || null);
+    }
+  }, [user]);
+
+  const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
-      // setErrorMsg("Permission to access location was denied");
       return;
     }
 
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location);
-  }
+  };
 
   const pickImage = async () => {
     const permissionResult =
@@ -72,6 +98,26 @@ export default function settings() {
     }
   };
 
+  const saveProfileChanges = async () => {
+    setLoading(true);
+    try {
+      updateProfile({
+        firstName,
+        lastName,
+        address,
+        email,
+        profilePic: image,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      Alert.alert("Success", "Profile updated successfully!");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error", "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -107,7 +153,13 @@ export default function settings() {
           {image ? (
             <Image
               source={{ uri: image }}
-              style={{ height: "100%", width: "100%", borderRadius: 100 }}
+              style={{
+                height: "100%",
+                width: "100%",
+                borderRadius: 100,
+                borderWidth: 3,
+                borderColor: "#d4d2d2",
+              }}
             />
           ) : (
             <View
@@ -129,7 +181,7 @@ export default function settings() {
             onPress={takePhoto}
             style={{ position: "absolute", right: 0, bottom: 0, zIndex: 10 }}
           >
-            <Entypo name="camera" size={30} color="brown" />
+            <Entypo name="camera" size={30} color="black" />
           </TouchableOpacity>
         </View>
 
@@ -160,9 +212,22 @@ export default function settings() {
 
       {/* Settings content goes here */}
       <View style={{ marginTop: 50, gap: 10 }}>
-        <AppInput placeholder="Full Name" />
-        <AppInput placeholder="Email" />
-        <AppInput placeholder="Address" />
+        <AppInput
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={setFirstName}
+        />
+        <AppInput
+          placeholder="Last Name"
+          value={lastName}
+          onChangeText={setLastName}
+        />
+        <AppInput placeholder="Email" value={email} onChangeText={setEmail} />
+        <AppInput
+          placeholder="Address"
+          value={address}
+          onChangeText={setAddress}
+        />
 
         {location && (
           <MapView
@@ -180,11 +245,17 @@ export default function settings() {
           />
         )}
 
-        <AppButton
-          name="Get Current Location"
-          color="gray"
-          onPress={getCurrentLocation}
-        />
+        {loading ? (
+          <View style={styles.btnLoader}>
+            <ActivityIndicator size={"large"} />
+          </View>
+        ) : (
+          <AppButton
+            name="Save Changes"
+            color="black"
+            onPress={saveProfileChanges}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -197,5 +268,10 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "100%",
+  },
+
+  btnLoader: {
+    backgroundColor: "black",
+    padding: 5,
   },
 });

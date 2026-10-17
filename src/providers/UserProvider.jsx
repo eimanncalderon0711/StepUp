@@ -73,7 +73,12 @@ export default function UserProvider({ children }) {
 
       const users = storedUsers ? JSON.parse(storedUsers) : [];
 
-      users.push({ ...data, firstName: "", lastName: "" });
+      users.push({
+        ...data,
+        firstName: data.firstName ?? "",
+        lastName: data.lastName ?? "",
+        profilePic: "",
+      });
 
       await AsyncStorage.setItem(ACCOUNT_KEY, JSON.stringify(users));
     } catch (error) {
@@ -81,7 +86,84 @@ export default function UserProvider({ children }) {
     }
   }
 
-  const data = useMemo(() => ({ user, login, register }), [user]);
+  async function updateProfile(updates) {
+    try {
+      // 1. Check if a user is logged in
+      if (!user?.username) {
+        return {
+          success: false,
+          message: "No logged-in user found",
+        };
+      }
+
+      // 2. Get all registered accounts
+      const storedAccounts = await AsyncStorage.getItem(ACCOUNT_KEY);
+      const accounts = storedAccounts ? JSON.parse(storedAccounts) : [];
+
+      // 3. Find the current user's account
+      const index = accounts.findIndex(
+        (account) => account.username === user.username,
+      );
+
+      if (index === -1) {
+        return {
+          success: false,
+          message: "Account not found",
+        };
+      }
+
+      // 4. Allow only profile fields to be updated
+      const profileUpdates = {
+        firstName: updates.firstName,
+        lastName: updates.lastName,
+        email: updates.email,
+        address: updates.address,
+        profilePic: updates.profilePic,
+      };
+
+      // 5. Convert to entries and remove undefined values
+      const filteredEntries = Object.entries(profileUpdates).filter(
+        ([, value]) => value !== undefined,
+      );
+
+      // 6. Convert the filtered entries back into an object
+      const validUpdates = Object.fromEntries(filteredEntries);
+
+      // 7. Merge the existing account with the new updates
+      const updatedUser = {
+        ...accounts[index],
+        ...validUpdates,
+      };
+
+      // 8. Save the updated account
+      accounts[index] = updatedUser;
+
+      await AsyncStorage.setItem(ACCOUNT_KEY, JSON.stringify(accounts));
+
+      // 9. Update the saved session
+      await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(updatedUser));
+
+      // 10. Update React Context state
+      setUser(updatedUser);
+
+      return {
+        success: true,
+        message: "Profile updated successfully",
+      };
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+
+      return {
+        success: false,
+        message: "Failed to update profile",
+      };
+    }
+  }
+
+  const data = useMemo(
+    () => ({ user, login, register, updateProfile }),
+    [user],
+  );
 
   return <UserContext.Provider value={data}>{children}</UserContext.Provider>;
 }

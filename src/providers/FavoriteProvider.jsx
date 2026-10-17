@@ -10,12 +10,12 @@ export default function FavoriteProvider({ children }) {
   const { user } = useUser();
 
   useEffect(() => {
+    let mounted = true;
+
     if (!user?.id) {
       setFavorites([]);
       return;
     }
-
-    let mounted = true;
 
     listFavorites();
 

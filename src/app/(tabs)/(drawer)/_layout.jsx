@@ -7,11 +7,11 @@ import {
 } from "@react-navigation/drawer";
 import { router } from "expo-router";
 import { Drawer } from "expo-router/drawer";
+import { HomeIcon, Settings } from "lucide-react-native";
 
 function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
-      
       <DrawerItemList {...props} />
 
       <DrawerItem
@@ -46,6 +46,9 @@ export default function Layout() {
         options={{
           drawerLabel: "Home",
           title: "Home",
+          drawerIcon: ({ color, size }) => (
+            <HomeIcon size={size} color={color} />
+          ),
         }}
       />
 
@@ -54,6 +57,9 @@ export default function Layout() {
         options={{
           drawerLabel: "Settings",
           title: "Settings",
+          drawerIcon: ({ color, size }) => (
+            <Settings size={size} color={color} />
+          ),
         }}
       />
     </Drawer>
